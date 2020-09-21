@@ -4,13 +4,11 @@ import numpy as np
 class Contours:
 
     def __init__(self):
-        self.__frame = None
         self.__main_contour = []
         self.__main_contour_np = np.array([])
         self.__ready_to_crop = False
 
     def print_main_contour(self, frame):
-        self.__frame = frame
         if len(self.__main_contour) > 0:
             for i in range(len(self.__main_contour)):
                 cv2.circle(frame, (self.__main_contour[i]), 5, (255, 0, 0), -1)

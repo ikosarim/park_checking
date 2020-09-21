@@ -1,15 +1,15 @@
 import cv2
+import numpy as np
 
 class ParkingRois:
 
     def __init__(self):
-        self.__frame = None
         self.__corners = []
         self.__parking_contours = []
+        self.__parking_contours_np = []
+        self.__ready = False
 
     def print_parking_rois(self, frame):
-        self.__frame = frame
-
         if len(self.__corners) > 0:
             print("Need circle")
             print(len(self.__corners))
@@ -29,9 +29,18 @@ class ParkingRois:
 
     def __create_parking_contours_mouse_event(self, event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
-            print("Left button on main roi")
             if len(self.__corners) < 4:
                 self.__corners.append((x, y))
             if len(self.__corners) == 4:
                 self.__parking_contours.append(self.__corners)
                 self.__corners = []
+        if event == cv2.EVENT_RBUTTONDOWN:
+            self.__parking_contours_np = np.array([self.__parking_contours])
+            self.__ready = True
+
+    @property
+    def get_ready(self):
+        return self.__ready
+
+    def get_final_frame(self, frame):
+        print("final step")

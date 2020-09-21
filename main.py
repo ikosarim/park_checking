@@ -21,6 +21,8 @@ if __name__ == '__main__':
             cv2.imshow("Main_roi", main_roi)
             parking_rois.create_parking_rois()
 
+            if parking_rois.get_ready:
+                parking_rois.get_final_frame(main_roi)
 
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
