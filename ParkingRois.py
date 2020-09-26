@@ -43,4 +43,24 @@ class ParkingRois:
         return self.__ready
 
     def get_final_frame(self, frame):
-        print("final step")
+        cropped = {}
+
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hsv_min = np.array((0, 0, 0), np.uint8)
+        hsv_max = np.array((254, 254, 254), np.uint8)
+        thresh = cv2.inRange(hsv, hsv_min, hsv_max)
+        contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        for park in self.__parking_contours_np:
+            x, y, h, w = cv2.boundingRect(park)
+            crop = frame[y: y + h, x: x + w]
+            key = tuple((x, y, h, w))
+            cropped.update({key: crop})
+
+        cv2.drawContours(frame, contours, -1, (155, 255, 0), -1, cv2.LINE_AA)
+
+        # for park in cropped.keys():
+        # #     frame[park[0], park[1]] = cropped.get(park)
+        #     cv2.imshow(park, cropped.get(park))
+
+        cv2.imshow("Result", frame)
