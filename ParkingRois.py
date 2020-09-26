@@ -32,7 +32,7 @@ class ParkingRois:
             if len(self.__corners) < 4:
                 self.__corners.append((x, y))
             if len(self.__corners) == 4:
-                self.__parking_contours.append(self.__corners)
+                self.__parking_contours.append(tuple(self.__corners))
                 self.__corners = []
         if event == cv2.EVENT_RBUTTONDOWN:
             self.__parking_contours_np = np.array([self.__parking_contours])
@@ -51,7 +51,8 @@ class ParkingRois:
         thresh = cv2.inRange(hsv, hsv_min, hsv_max)
         contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        for park in self.__parking_contours_np:
+        for i in range(len(self.__parking_contours_np) - 1):
+            park = self.__parking_contours_np[i]
             x, y, h, w = cv2.boundingRect(park)
             crop = frame[y: y + h, x: x + w]
             key = tuple((x, y, h, w))
@@ -60,7 +61,7 @@ class ParkingRois:
         cv2.drawContours(frame, contours, -1, (155, 255, 0), -1, cv2.LINE_AA)
 
         # for park in cropped.keys():
-        # #     frame[park[0], park[1]] = cropped.get(park)
+        #     frame[park[1]:park[1] + park[3], park[0]:park[0] + park[2]] = cropped.get(park)
         #     cv2.imshow(park, cropped.get(park))
 
         cv2.imshow("Result", frame)
